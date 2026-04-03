@@ -25,15 +25,20 @@ app.use('/api/drives', driveRoutes);
 app.use('/api/applications', appRoutes);
 app.use('/api/ai', aiRoutes);
 
-// Connect to MongoDB
+// Vercel handles PORT dynamically, and we only need to manually listen if running locally
 const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB asynchronously but don't block the app export for Vercel
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('MongoDB local connected successfully');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('Database connection error:', err);
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch(err => console.error('Database connection error:', err));
+
+// On Vercel, we export the app. Locally, we start the listener.
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT} (Local Mode)`);
     });
+}
+
+// Export for Vercel Serverless
+module.exports = app;
