@@ -1,5 +1,5 @@
 'use client';
-import { LayoutDashboard, Briefcase, Building, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, Filter, ChevronRight, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Building, Building2, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, Filter, ChevronRight, TrendingUp } from 'lucide-react';
 
 export default function InstituteDashboard() {
   return (
