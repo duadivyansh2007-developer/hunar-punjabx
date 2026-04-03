@@ -1,5 +1,5 @@
 'use client';
-import { LayoutDashboard, Briefcase, Building, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, ChevronRight, CheckCircle2, Hourglass, Star } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Building, Building2, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, ChevronRight, CheckCircle2, Hourglass, Star } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 export default function StudentDashboard() {
