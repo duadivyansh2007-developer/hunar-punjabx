@@ -28,10 +28,11 @@ export default function Login() {
       if (response.ok) {
         // Save the token and user data
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('name', data.name);
         
         // Navigate based on their actual database role
-        router.push(`/dashboard/${data.user.role}`);
+        router.push(`/dashboard/${data.role}`);
       } else {
         alert(`Login failed: ${data.msg || 'Invalid credentials'}`);
       }

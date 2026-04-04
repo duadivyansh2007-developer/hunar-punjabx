@@ -1,7 +1,51 @@
 'use client';
-import { LayoutDashboard, Briefcase, Building, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, Download, Users, TrendingUp, AlertTriangle, Info } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { LayoutDashboard, Briefcase, Building, Target, BarChart2, Settings, HelpCircle, Bell, Search, Bot, User, Download, Users, TrendingUp, AlertTriangle, Info, Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const [adminName, setAdminName] = useState('Admin');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  const institutes = [
+    { rank: '01', inst: 'PVT', name: 'Punjab Vocational Training', spec: 'Excellence in IT & Robotics', score: '94.8' },
+    { rank: '02', inst: 'TEV', name: 'TEVTA Multan College', spec: 'Specialized in Mechanical Eng', score: '91.2', bg: '#ccfbf1' },
+    { rank: '03', inst: 'GTI', name: 'Govt. Technical Institute', spec: 'Industrial Electronics Leader', score: '88.5', bg: '#ffedd5' }
+  ];
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    const storedName = localStorage.getItem('name');
+
+    if (!token || role !== 'admin') {
+      router.push('/login');
+      return;
+    }
+
+    if (storedName) setAdminName(storedName);
+    
+    // Simulate initial loading for premium feel
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  const filteredInstitutes = institutes.filter(inst => 
+    inst.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    inst.inst.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (loading) {
+    return (
+      <div className="flex-center" style={{ height: '100vh', flexDirection: 'column', gap: '1rem' }}>
+        <Loader2 className="animate-spin" size={40} color="#00283e"/>
+        <p>Generating state-wide intelligence...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="app-layout">
       {/* Sidebar */}
@@ -19,7 +63,10 @@ export default function AdminDashboard() {
         <div style={{ padding: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
           <div className="nav-item"><Settings size={20}/> Settings</div>
           <div className="nav-item"><HelpCircle size={20}/> Support</div>
-          <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>Submit Report</button>
+          <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={() => {
+            localStorage.clear();
+            router.push('/login');
+          }}>Logout</button>
         </div>
       </aside>
 
@@ -28,7 +75,12 @@ export default function AdminDashboard() {
         <header className="topbar">
           <div className="search-bar">
             <Search size={18} />
-            <input type="text" placeholder="Search analytics..." />
+            <input 
+              type="text" 
+              placeholder="Search analytics, districts, or institutes..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <Bell size={20} color="#64748b"/>
@@ -36,7 +88,7 @@ export default function AdminDashboard() {
             <button className="btn btn-primary" style={{ gap: '0.5rem', borderRadius: '20px' }}>
               <Bot size={18}/> AI Chatbot
             </button>
-            <div style={{ background: '#e2e8f0', borderRadius: '50%', padding: '0.5rem' }}><User size={20} color="#00283e"/></div>
+            <div style={{ background: '#e2e8f0', borderRadius: '50%', padding: '0.5rem' }} title={adminName}><User size={20} color="#00283e"/></div>
           </div>
         </header>
 
@@ -44,7 +96,7 @@ export default function AdminDashboard() {
           <div className="flex-between" style={{ marginBottom: '2rem' }}>
             <div>
               <h1 className="section-title">State Analytics Overview</h1>
-              <p style={{ color: '#475569' }}>Real-time skill development insights across 36 districts.</p>
+              <p style={{ color: '#475569' }}>Real-time skill development insights for {adminName}.</p>
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
               <button className="btn btn-outline" style={{ background: 'white' }}>📅 Q3 2024 Report</button>
@@ -120,11 +172,7 @@ export default function AdminDashboard() {
                </div>
                
                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                 {[
-                   { rank: '01', inst: 'PVT', name: 'Punjab Vocational Training', spec: 'Excellence in IT & Robotics', score: '94.8' },
-                   { rank: '02', inst: 'TEV', name: 'TEVTA Multan College', spec: 'Specialized in Mechanical Eng', score: '91.2', bg: '#ccfbf1' },
-                   { rank: '03', inst: 'GTI', name: 'Govt. Technical Institute', spec: 'Industrial Electronics Leader', score: '88.5', bg: '#ffedd5' }
-                 ].map(item => (
+                 {filteredInstitutes.length > 0 ? filteredInstitutes.map(item => (
                    <div key={item.rank} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                      <h3 style={{ color: '#cbd5e1', fontSize: '1.5rem' }}>{item.rank}</h3>
                      <div style={{ background: item.bg || '#e0f2fe', color: '#004b73', padding: '0.8rem', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.8rem' }}>{item.inst}</div>
@@ -137,7 +185,7 @@ export default function AdminDashboard() {
                        <p style={{ fontSize: '0.6rem', color: '#64748b' }}>SCORE</p>
                      </div>
                    </div>
-                 ))}
+                 )) : <p style={{ color: '#64748b' }}>No institutes found matching your search.</p>}
                </div>
             </div>
 
