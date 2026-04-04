@@ -31,7 +31,7 @@ export default function Register() {
         alert('Registration successful! Please login.');
         router.push('/login');
       } else {
-        alert(`Error: ${data.msg || 'Registration failed'}`);
+        alert(`Error: ${data.error || data.msg || 'Registration failed'}`);
       }
     } catch (err) {
       console.error(err);
