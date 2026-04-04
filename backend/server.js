@@ -3,11 +3,23 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const dbConnect = require('./utils/db');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Basic routes (We will modularize these later)
+// Middleware to ensure DB connection
+app.use(async (req, res, next) => {
+    try {
+        await dbConnect();
+        next();
+    } catch (err) {
+        res.status(500).json({ error: 'Database connection failed', details: err.message });
+    }
+});
+
+// Basic routes
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'HUNAR Punjab API is running' });
 });
