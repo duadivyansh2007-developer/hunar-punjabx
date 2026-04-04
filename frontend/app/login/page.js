@@ -34,7 +34,7 @@ export default function Login() {
         // Navigate based on their actual database role
         router.push(`/dashboard/${data.role}`);
       } else {
-        alert(`Login failed: ${data.msg || 'Invalid credentials'}`);
+        alert(`Login failed: ${data.error || data.msg || 'Invalid credentials'}`);
       }
     } catch (err) {
       console.error(err);
