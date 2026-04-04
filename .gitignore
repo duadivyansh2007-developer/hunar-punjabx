@@ -1,0 +1,18 @@
+# 🐙 Root .gitignore for HUNAR Punjab
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/.vercel
+backend/npm-debug.log*
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env
+frontend/.vercel
+frontend/npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
